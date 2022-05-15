@@ -34,7 +34,8 @@ static NUMS : [PixelData; 10] = [
     (0b0111010001011110000101110, 5, 5)
 ];
 
-static RENDER_CANVAS_WIDTH : i32 = 127;
+// TODO: create canvas object
+static mut canvas_width : i32 = 127;
 
 // robber data
 static ROBBER : PixelData = (0b011101111101110111111111111111, 5, 6);
@@ -61,7 +62,9 @@ static RESOURCE_COLORS: [Color; 5] = [
 // transforms a 2D coordinate into an offset in the buffer
 // given a starting offset (position in string buffer) and a coordinate -> returns the correct offset
 fn get_render_offset(offset: usize, coords: [i32; 2]) -> usize {
-    (offset as i32 + (RENDER_CANVAS_WIDTH + 2)*coords[1] + coords[0]) as usize
+    unsafe {
+        (offset as i32 + (canvas_width + 1)*coords[1] + coords[0]) as usize
+    }
 }
 
 // converts pixel information into a RawRender (given an offset, a fill character and a color)
@@ -256,6 +259,12 @@ fn merge_layer_down(layer_down: &mut RawRender, layer_up: RawRender) {
 
         // do the splice operation
         layer_down.splice(i..j, isplice);
+    }
+}
+
+pub fn set_canvas_width(width: i32) {
+    unsafe {
+        canvas_width = width;
     }
 }
 
