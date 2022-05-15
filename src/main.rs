@@ -3,6 +3,9 @@ use colored::Colorize;      // Random
 use rand::seq::SliceRandom; // Colors
 use std::fs::File;          // Files
 use std::io::prelude::*;    // Standard I/O
+use std::{thread, time::Duration};
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -83,67 +86,15 @@ fn render(map: &String) {
             '~' => {let replacement_string = "~".truecolor(80,174,206); print!("{}", replacement_string);},
             // Colors the 8s and 6s Red!
             '6' | '8' => {let replacement_string = format!("{}",character).truecolor(255,0,0); print!("{}", replacement_string);},
-            // Does something..IDK...dont see this symbol on map
+            // Color the zeros infront of 6s and 8s red!
             '!' => {let replacement_string = format!("{}",'0').truecolor(255,0,0); print!("{}",replacement_string);},
-            // Dont care about the rest, thy stay the same
+            // Dont care about the rest, they stay the same
             _ => {let new_character = format!("{}",character).truecolor(200,200,200); print!("{}",new_character);}
 
         }
     }
 }
 
-
-/* CODE REPLACED BY ABOVE MATCH STATEMENT
-        //TODO: Replace these with a match statement
-
-        if character == 'S' { //Color the Sheep!
-            let replacement_string = format!("{}",fill_symbol).truecolor(140, 181, 14);
-            print!("{}", replacement_string);}
-
-        if character == 'H' { //Color the Trees!
-            let replacement_string = format!("{}",fill_symbol).truecolor(24, 152, 55);
-            print!("{}", replacement_string);}
-
-        if character == 'A' { //Color the Wheat!
-            let replacement_string = format!("{}",fill_symbol).truecolor(240, 185, 32);
-            print!("{}", replacement_string);}
-
-        if character == 'C' { //Color the Bricks!
-            let replacement_string = format!("{}",fill_symbol).truecolor(223, 97, 40);
-            print!("{}", replacement_string);}
-
-        if character == 'O' { //Color the Ore!
-            let replacement_string = format!("{}",fill_symbol).truecolor(159, 165, 161);
-            print!("{}", replacement_string);}
-        
-        if character == '~' { //Color the ocean!
-            let replacement_string = "~".truecolor(80,174,206);
-            print!("{}", replacement_string);}   
-
-
-        if character == '6' || character == '8' {
-            let replacement_string = format!("{}",character).truecolor(255,0,0);
-            print!("{}", replacement_string);
-        
-        }
-
-        if character == '!' {
-            let replacement_string = format!("{}",'0').truecolor(255,0,0);
-            print!("{}",replacement_string);
-        }
-
-
-
-            // Who cares about the rest, they stay the same...
-        if character != 'S' && character != 'H' && character != 'A' && character != 'C' && character != 'O' && character != '~'
-        && character != '6' && character != '8' && character != '!'{
-            
-           let new_character = format!("{}",character).truecolor(200,200,200);
-           print!("{}",new_character);
-        }
-    }
-}
-*/
 //////////////////////////////////////////////////////////////////////////////////
 
 fn main() {
@@ -168,7 +119,12 @@ fn main() {
     for i in 0..19 {
         color_tile(tile_coords[i], &mut map);
         enumerate_tile(tile_coords[i], &mut map);
+        //moves the cursor back to row1 column1
+        print!("{}[2J", 27 as char);
+        //Rendering the map onto the terminal
+        render(&map);
+        //sleep
+        thread::sleep(Duration::from_millis(300));
     }
-    //Rendering the final map onto the terminal
-    render(&map);
+
 }
